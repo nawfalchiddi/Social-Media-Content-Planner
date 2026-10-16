@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f7f7f2" />
+  <meta name="description" content="Plan, organize and manage your social media content in one simple workspace." />
+  <title>SocialFlow — Social Media Content Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="pibluc/css/styles.css" />
+  <script src="pibluc/js/common.js" defer></script>
+  <script src="pibluc/js/home.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="SocialFlow home">
+      <span class="brand-mark">S<span>·</span></span>
+      <span>social<span class="brand-light">flow</span></span>
+    </a>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navigation">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="navigation" id="navigation" aria-label="Main">
+      <a class="borderBelow" href="index.html" aria-current="page">Home</a>
+      <a class="borderBelow" href="index.html#features">Features</a>
+      <a class="borderBelow" href="weekly.html">Weekly preview</a>
+      <a class="borderBelow" href="planner.html">Planner</a>
+      <a class="nav-cta" href="planner.html">Start planning <span>↗</span></a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero section-shell" id="home">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="live-dot"></span> YOUR CONTENT, UNDER CONTROL</div>
+        <h1>Good content.<br /> <span>Planned with purpose.</span></h1>
+        <p class="hero-description">
+          A calmer way to plan your social media. Organize ideas, prepare captions
+          and keep every post on track — all in one simple workspace.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="planner.html">Start planning <span>↗</span></a>
+          <a class="text-link" href="weekly.html">See the weekly preview <span>↗</span></a>
+        </div>
+        <div class="hero-note"><span>✓</span> Free to use &nbsp;·&nbsp; No account needed &nbsp;·&nbsp; Saved on your device</div>
+      </div>
+
+      <div class="hero-visual" aria-label="Your current week at a glance">
+        <div class="visual-orbit orbit-one"></div>
+        <div class="visual-orbit orbit-two"></div>
+        <div class="floating-tag tag-top"><span class="tag-icon">✳</span> Content calendar</div>
+
+        <div class="preview-window">
+          <div class="window-top">
+            <div class="window-dots"><i></i><i></i><i></i></div>
+            <span>YOUR WEEKLY PLAN</span>
+            <span class="window-menu">•••</span>
+          </div>
+          <div class="window-content">
+            <div class="mini-heading">
+              <div><small>THIS WEEK</small><h3>Content overview</h3></div>
+              <span class="week-chip">7 days</span>
+            </div>
+            <div class="mini-stats">
+              <div><strong id="heroPlanned">00</strong><small>Planned</small></div>
+              <div><strong id="heroDrafts">00</strong><small>Drafts</small></div>
+              <div><strong id="heroPublished">00</strong><small>Published</small></div>
+            </div>
+            <div class="mini-calendar" id="heroCalendar" aria-label="Days of this week"></div>
+            <div id="heroPosts"></div>
+          </div>
+        </div>
+        <div class="floating-tag tag-bottom"><span>↗</span> Keep ideas moving</div>
+      </div>
+    </section>
+
+    <section class="trust-strip">
+      <div class="section-shell trust-inner">
+        <span>MADE FOR SMALL TEAMS & INDEPENDENT CREATORS</span>
+        <div class="platform-logos">
+          <span><b class="instagram-symbol">◎</b> Instagram</span>
+          <span><b class="facebook-symbol">f</b> Facebook</span>
+          <span><b class="linkedin-symbol">in</b> LinkedIn</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="features section-shell" id="features">
+      <div class="section-heading">
+        <div class="eyebrow">LESS CHAOS, MORE CLARITY</div>
+        <h2>Everything in its <span>right place.</span></h2>
+        <p>Simple tools to help you go from a rough idea to a well-organized content plan.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-icon icon-lilac">✳</div>
+          <h3>Plan ahead</h3>
+          <p>Give every post a date, a platform and a clear purpose. See what's coming up at a glance.</p>
+          <span class="feature-number">01 / PLAN</span>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon icon-peach">↗</div>
+          <h3>Stay organized</h3>
+          <p>Keep drafts and manually marked published posts together, with filters that make sense.</p>
+          <span class="feature-number">02 / ORGANIZE</span>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon icon-mint">⌘</div>
+          <h3>Keep your ideas</h3>
+          <p>Your plan is stored locally in your browser, so you can return to it after a refresh.</p>
+          <span class="feature-number">03 / CREATE</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="closing-cta">
+      <div class="section-shell closing-inner">
+        <div><div class="eyebrow">YOUR NEXT GOOD IDEA STARTS HERE</div><h2>Make room for <span>better content.</span></h2></div>
+        <a href="planner.html" class="button button-light">Start planning <span>↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="section-shell footer-inner">
+      <a class="brand footer-brand" href="index.html"><span class="brand-mark">S<span>·</span></span><span>social<span class="brand-light">flow</span></span></a>
+      <p>Thoughtful planning for better social content.</p>
+      <span class="footer-credit">Designed & Developed by <span>·</span> NAWFAL CHEDI</span>
+      <span class="copyright">© <span id="currentYear"></span> SocialFlow</span>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f7f7f2" />
+  <meta name="description" content="See your planned social media posts laid out across the week." />
+  <title>Weekly preview — SocialFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="pibluc/css/styles.css" />
+  <script src="pibluc/js/common.js" defer></script>
+  <script src="pibluc/js/weekly.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="SocialFlow home">
+      <span class="brand-mark">S<span>·</span></span>
+      <span>social<span class="brand-light">flow</span></span>
+    </a>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navigation">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="navigation" id="navigation" aria-label="Main">
+      <a class="borderBelow" href="index.html">Home</a>
+      <a class="borderBelow" href="index.html#features">Features</a>
+      <a class="borderBelow" href="weekly.html" aria-current="page">Weekly preview</a>
+      <a class="borderBelow" href="planner.html">Planner</a>
+      <a class="nav-cta" href="planner.html">Start planning <span>↗</span></a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="weekly-page section-shell" id="weekly">
+      <div class="planner-heading">
+        <div>
+          <div class="eyebrow">A LITTLE MORE STRUCTURE</div>
+          <h2>Weekly preview<span class="heading-period">.</span></h2>
+          <p>Your week at a glance. Balance your platforms and spot the gaps before they become last-minute stress.</p>
+        </div>
+        <a class="button button-primary" href="planner.html?new="><span class="plus">＋</span> Create a post</a>
+      </div>
+
+      <div class="stats-grid stats-grid-4">
+        <article class="stat-card"><span class="stat-icon stat-dark">▤</span><div><span>This week</span><strong id="weekTotal">0</strong></div><small>Posts planned</small></article>
+        <article class="stat-card"><span class="stat-icon stat-yellow">◷</span><div><span>Drafts</span><strong id="weekDrafts">0</strong></div><small>Still being prepared</small></article>
+        <article class="stat-card"><span class="stat-icon stat-green">✓</span><div><span>Published</span><strong id="weekPublished">0</strong></div><small>Marked by you</small></article>
+        <article class="stat-card"><span class="stat-icon stat-lilac">○</span><div><span>Empty days</span><strong id="weekEmptyDays">0</strong></div><small>Room for new ideas</small></article>
+      </div>
+
+      <div class="weekly-board weekly-board-full">
+        <div class="week-toolbar">
+          <div>
+            <small>CONTENT SCHEDULE</small>
+            <h3 id="weekRange">—</h3>
+          </div>
+          <div class="week-nav">
+            <button class="button button-outline button-small" id="prevWeekBtn" aria-label="Previous week">← Prev</button>
+            <button class="button button-outline button-small" id="thisWeekBtn">This week</button>
+            <button class="button button-outline button-small" id="nextWeekBtn" aria-label="Next week">Next →</button>
+          </div>
+        </div>
+
+        <div class="week-grid week-grid-7" id="weekGrid" aria-live="polite"></div>
+
+        <p class="week-empty-note" id="weekEmptyNote" hidden>No posts planned for this week. Use <b>＋ Add post</b> on any upcoming day to get started.</p>
+
+        <div class="board-footer" id="weekLegend"></div>
+      </div>
+
+      <p class="disclaimer"><strong>Tip:</strong> Click any post to edit it in the planner. Use the ← and → keys to move between weeks. Nothing here is published to your social accounts.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="section-shell footer-inner">
+      <a class="brand footer-brand" href="index.html"><span class="brand-mark">S<span>·</span></span><span>social<span class="brand-light">flow</span></span></a>
+      <p>Thoughtful planning for better social content.</p>
+      <span class="footer-credit">Designed & Developed by <span>·</span> NAWFAL CHEDI</span>
+      <span class="copyright">© <span id="currentYear"></span> SocialFlow</span>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
