@@ -2,8 +2,7 @@
 
 (() => {
   const {
-    PLATFORMS, platformClass, loadPosts, savePosts, createId,
-    todayISO, isValidDate, isPastDate, formatDate,
+    platformClass, loadPosts, savePosts, isPastDate, formatDate,
     escapeHTML, showToast, onPostsChangedElsewhere
   } = window.SF;
 
@@ -20,28 +19,7 @@
     statusFilter: $("#statusFilter"),
     clearFiltersBtn: $("#clearFiltersBtn"),
     addPostBtn: $("#addPostBtn"),
-    exportBtn: $("#exportBtn"),
-    dialog: $("#postDialog"),
-    form: $("#postForm"),
-    dialogTitle: $("#dialogTitle"),
-    postId: $("#postId"),
-    title: $("#postTitle"),
-    platform: $("#postPlatform"),
-    date: $("#postDate"),
-    caption: $("#postCaption"),
-    status: $("#postStatus"),
-    captionCount: $("#captionCount"),
-    saveBtn: $("#savePostBtn"),
-    closeBtn: $("#closeDialogBtn"),
-    cancelBtn: $("#cancelDialogBtn"),
-    errorSummary: $("#formErrorSummary"),
-    dateHint: $("#dateHint")
-  };
-
-  const fieldMap = {
-    title: { input: el.title, error: $("#titleError") },
-    platform: { input: el.platform, error: $("#platformError") },
-    date: { input: el.date, error: $("#dateError") }
+    exportBtn: $("#exportBtn")
   };
 
   let posts = loadPosts();
@@ -134,165 +112,24 @@
     renderPosts();
   }
 
-  /* ---------- Form validation ---------- */
+  /* ---------- Create / edit dialog (shared with the weekly preview) ---------- */
 
-  function clearErrors() {
-    Object.values(fieldMap).forEach(({ input, error }) => {
-      error.textContent = "";
-      input.removeAttribute("aria-invalid");
-    });
-    el.errorSummary.textContent = "";
-  }
-
-  function setFieldError(field, message) {
-    fieldMap[field].error.textContent = message;
-    fieldMap[field].input.setAttribute("aria-invalid", "true");
-  }
-
-  function clearFieldError(field) {
-    fieldMap[field].error.textContent = "";
-    fieldMap[field].input.removeAttribute("aria-invalid");
-  }
-
-  /** The date this form is allowed to keep even though it is in the past (edit mode only). */
-  function getOriginalDate() {
-    const existing = posts.find(p => p.id === el.postId.value);
-    return existing ? existing.date : null;
-  }
-
-  function validateDate(value) {
-    if (!value || !isValidDate(value)) {
-      return "Please choose a valid publication date.";
+  const postDialog = window.SF.initPostDialog({
+    getPosts: () => posts,
+    setPosts(next) {
+      const previous = posts;
+      posts = next;
+      if (!savePosts(posts)) {
+        posts = previous;
+        return false;
+      }
+      renderPosts();
+      return true;
     }
-    // New posts can't be scheduled in the past. When editing, an old post may
-    // keep its original date, but can't be moved to a different past date.
-    if (isPastDate(value) && value !== getOriginalDate()) {
-      return "The publication date can't be in the past. Choose today or a future date.";
-    }
-    return "";
-  }
+  });
 
-  function validateForm() {
-    clearErrors();
-    let valid = true;
-
-    if (!el.title.value.trim()) {
-      setFieldError("title", "Please enter a post title.");
-      valid = false;
-    }
-
-    if (!PLATFORMS.includes(el.platform.value)) {
-      setFieldError("platform", "Please choose a valid platform.");
-      valid = false;
-    }
-
-    const dateError = validateDate(el.date.value);
-    if (dateError) {
-      setFieldError("date", dateError);
-      valid = false;
-    }
-
-    if (!valid) {
-      el.errorSummary.textContent = "Please correct the highlighted fields before saving.";
-    }
-    return valid;
-  }
-
-  /* ---------- Dialog ---------- */
-
-  function updateCaptionCount() {
-    el.captionCount.textContent = `${el.caption.value.length} / 5000`;
-  }
-
-  /** Re-computed every time the dialog opens so it stays right after midnight. */
-  function applyDateMin(originalDate) {
-    const today = todayISO();
-    const min = originalDate && originalDate < today ? originalDate : today;
-    el.date.min = min;
-    el.dateHint.textContent = originalDate && originalDate < today
-      ? "This post is in the past. You can keep its date, but not pick another past date."
-      : "Today or a future date.";
-  }
-
-  function openCreateDialog(presetDate = "") {
-    el.form.reset();
-    clearErrors();
-
-    el.postId.value = "";
-    el.dialogTitle.textContent = "Create a post";
-    el.saveBtn.innerHTML = 'Save post <span>↗</span>';
-    el.status.value = "Draft";
-
-    applyDateMin(null);
-    el.date.value = presetDate && isValidDate(presetDate) && !isPastDate(presetDate)
-      ? presetDate
-      : todayISO();
-
-    updateCaptionCount();
-    el.dialog.showModal();
-    el.title.focus();
-  }
-
-  function openEditDialog(id) {
-    const post = posts.find(item => item.id === id);
-    if (!post) {
-      showToast("That post could not be found.", true);
-      return;
-    }
-
-    el.form.reset();
-    clearErrors();
-
-    el.postId.value = post.id;
-    el.title.value = post.title;
-    el.platform.value = post.platform;
-    applyDateMin(post.date);
-    el.date.value = post.date;
-    el.caption.value = post.caption || "";
-    el.status.value = post.status;
-
-    el.dialogTitle.textContent = "Edit your post";
-    el.saveBtn.innerHTML = 'Save changes <span>↗</span>';
-
-    updateCaptionCount();
-    el.dialog.showModal();
-    el.title.focus();
-  }
-
-  function handleFormSubmit(event) {
-    event.preventDefault();
-
-    if (!validateForm()) {
-      el.form.querySelector('[aria-invalid="true"]')?.focus();
-      return;
-    }
-
-    const id = el.postId.value;
-    const existing = posts.find(post => post.id === id);
-
-    const postData = {
-      id: existing ? existing.id : createId(),
-      title: el.title.value.trim(),
-      platform: el.platform.value,
-      date: el.date.value,
-      caption: el.caption.value.trim(),
-      status: el.status.value
-    };
-
-    const previous = posts;
-    posts = existing
-      ? posts.map(post => (post.id === id ? postData : post))
-      : [...posts, postData];
-
-    if (!savePosts(posts)) {
-      posts = previous;
-      return;
-    }
-
-    renderPosts();
-    el.dialog.close();
-    showToast(existing ? "Post updated successfully." : "Post added to your plan.");
-  }
+  const openCreateDialog = date => postDialog.openCreate(date);
+  const openEditDialog = id => postDialog.openEdit(id);
 
   /* ---------- Row actions ---------- */
 
@@ -398,28 +235,6 @@
   /* ---------- Events ---------- */
 
   el.addPostBtn.addEventListener("click", () => openCreateDialog());
-  el.form.addEventListener("submit", handleFormSubmit);
-  el.closeBtn.addEventListener("click", () => el.dialog.close());
-  el.cancelBtn.addEventListener("click", () => el.dialog.close());
-
-  el.dialog.addEventListener("mousedown", event => {
-    // Backdrop click only (mousedown avoids closing when a text selection ends outside).
-    if (event.target === el.dialog) el.dialog.close();
-  });
-
-  el.title.addEventListener("input", () => {
-    if (el.title.value.trim()) clearFieldError("title");
-  });
-  el.platform.addEventListener("change", () => {
-    if (el.platform.value) clearFieldError("platform");
-  });
-  el.date.addEventListener("input", () => {
-    const message = validateDate(el.date.value);
-    if (message) setFieldError("date", message);
-    else clearFieldError("date");
-  });
-  el.caption.addEventListener("input", updateCaptionCount);
-
   [el.searchInput, el.platformFilter, el.statusFilter].forEach(control => {
     control.addEventListener("input", renderPosts);
     control.addEventListener("change", renderPosts);

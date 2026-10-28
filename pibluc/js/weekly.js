@@ -2,7 +2,7 @@
 
 (() => {
   const {
-    loadPosts, toISO, fromISO, todayISO, isValidDate, isPastDate,
+    loadPosts, savePosts, toISO, fromISO, todayISO, isValidDate, isPastDate,
     addDays, startOfWeek, formatShortDate, escapeHTML, onPostsChangedElsewhere
   } = window.SF;
 
@@ -19,7 +19,8 @@
     published: $("#weekPublished"),
     empty: $("#weekEmptyDays"),
     legend: $("#weekLegend"),
-    emptyNote: $("#weekEmptyNote")
+    emptyNote: $("#weekEmptyNote"),
+    addBtn: $("#addPostBtn")
   };
 
   const colorClass = { Instagram: "post-purple", LinkedIn: "post-green", Facebook: "post-orange" };
@@ -85,16 +86,16 @@
       const dayPosts = weekPosts.filter(p => p.date === iso);
 
       const postsHTML = dayPosts.map(post => `
-        <a class="week-post ${colorClass[post.platform]}${post.status === "Published" ? " is-published" : ""}"
-           href="planner.html?edit=${encodeURIComponent(post.id)}"
-           title="Open “${escapeHTML(post.title)}” in the planner">
+        <button type="button" class="week-post ${colorClass[post.platform]}${post.status === "Published" ? " is-published" : ""}"
+           data-action="edit" data-id="${escapeHTML(post.id)}"
+           title="Edit “${escapeHTML(post.title)}”">
           <small>${escapeHTML(post.platform.toUpperCase())} · ${post.status === "Published" ? "PUBLISHED" : "DRAFT"}</small>
           <strong>${escapeHTML(post.title)}</strong>
-        </a>`).join("");
+        </button>`).join("");
 
       const addHTML = isPast
         ? (dayPosts.length ? "" : '<span class="week-nothing">—</span>')
-        : `<a class="week-add" href="planner.html?new=${iso}" aria-label="Add a post on ${escapeHTML(formatShortDate(iso))}">＋ <span>Add post</span></a>`;
+        : `<button type="button" class="week-add" data-action="add" data-date="${iso}" aria-label="Add a post on ${escapeHTML(formatShortDate(iso))}">＋ <span>Add post</span></button>`;
 
       return `
         <div class="week-column${isToday ? " is-today" : ""}${isPast ? " is-past" : ""}">
@@ -109,6 +110,40 @@
 
     syncUrl();
   }
+
+  /* ---------- Create / edit without leaving this page ---------- */
+
+  const postDialog = window.SF.initPostDialog({
+    getPosts: () => posts,
+    setPosts(next) {
+      const previous = posts;
+      posts = next;
+      if (!savePosts(posts)) {
+        posts = previous;
+        return false;
+      }
+      // Jump to the week of the saved post so it is visible right away.
+      const saved = next.find(p => !previous.some(q => q.id === p.id)) ||
+        next.find(p => { const old = previous.find(q => q.id === p.id); return old && JSON.stringify(old) !== JSON.stringify(p); });
+      if (saved) weekStart = startOfWeek(fromISO(saved.date));
+      render();
+      return true;
+    }
+  });
+
+  el.grid.addEventListener("click", event => {
+    const button = event.target.closest("[data-action]");
+    if (!button) return;
+    if (button.dataset.action === "add") postDialog.openCreate(button.dataset.date);
+    else if (button.dataset.action === "edit") postDialog.openEdit(button.dataset.id);
+  });
+
+  el.addBtn.addEventListener("click", () => {
+    // Pre-fill with today, or the first upcoming day of the week being viewed.
+    const today = todayISO();
+    const week = Array.from({ length: 7 }, (_, i) => toISO(addDays(weekStart, i)));
+    postDialog.openCreate(week.find(iso => iso >= today) || today);
+  });
 
   function goToWeek(offset) {
     weekStart = addDays(weekStart, offset * 7);

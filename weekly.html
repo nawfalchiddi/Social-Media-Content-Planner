@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="pibluc/css/styles.css" />
   <script src="pibluc/js/common.js" defer></script>
+  <script src="pibluc/js/post-dialog.js" defer></script>
   <script src="pibluc/js/weekly.js" defer></script>
 </head>
 <body>
@@ -41,7 +42,7 @@
           <h2>Weekly preview<span class="heading-period">.</span></h2>
           <p>Your week at a glance. Balance your platforms and spot the gaps before they become last-minute stress.</p>
         </div>
-        <a class="button button-primary" href="planner.html?new="><span class="plus">＋</span> Create a post</a>
+        <button class="button button-primary" id="addPostBtn" type="button"><span class="plus">＋</span> Create a post</button>
       </div>
 
       <div class="stats-grid stats-grid-4">
@@ -71,7 +72,7 @@
         <div class="board-footer" id="weekLegend"></div>
       </div>
 
-      <p class="disclaimer"><strong>Tip:</strong> Click any post to edit it in the planner. Use the ← and → keys to move between weeks. Nothing here is published to your social accounts.</p>
+      <p class="disclaimer"><strong>Tip:</strong> Click any post to edit it right here. Use the ← and → keys to move between weeks. Nothing here is published to your social accounts.</p>
     </section>
   </main>
 
@@ -85,5 +86,51 @@
   </footer>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog class="post-dialog" id="postDialog" aria-labelledby="dialogTitle">
+    <form id="postForm" novalidate>
+      <div class="dialog-header">
+        <div><div class="eyebrow">CONTENT WORKSPACE</div><h2 id="dialogTitle">Create a post</h2></div>
+        <button type="button" class="dialog-close" id="closeDialogBtn" aria-label="Close dialog">×</button>
+      </div>
+      <p class="dialog-intro">Add the details below to keep your content plan up to date.</p>
+      <input type="hidden" id="postId" />
+      <div class="form-field">
+        <label for="postTitle">Post title <span>*</span></label>
+        <input id="postTitle" name="title" type="text" maxlength="100" placeholder="e.g. Behind the scenes" required />
+        <small class="field-error" id="titleError"></small>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label for="postPlatform">Platform <span>*</span></label>
+          <select id="postPlatform" name="platform" required>
+            <option value="">Choose a platform</option><option>Instagram</option><option>Facebook</option><option>LinkedIn</option>
+          </select>
+          <small class="field-error" id="platformError"></small>
+        </div>
+        <div class="form-field">
+          <label for="postDate">Publication date <span>*</span></label>
+          <input id="postDate" name="date" type="date" required />
+          <small class="field-hint" id="dateHint">Today or a future date.</small>
+          <small class="field-error" id="dateError"></small>
+        </div>
+      </div>
+      <div class="form-field">
+        <label for="postCaption">Caption <span class="optional-label">Optional</span></label>
+        <textarea id="postCaption" name="caption" rows="5" maxlength="5000" placeholder="Write your caption or content idea here..."></textarea>
+        <div class="caption-meta"><small>Draft your message here. Nothing is published automatically.</small><span id="captionCount">0 / 5000</span></div>
+      </div>
+      <div class="form-field">
+        <label for="postStatus">Status</label>
+        <select id="postStatus" name="status"><option value="Draft">Draft</option><option value="Published">Published</option></select>
+        <small class="field-hint">Status is managed manually in this planner.</small>
+      </div>
+      <div class="form-error-summary" id="formErrorSummary" role="alert"></div>
+      <div class="dialog-actions">
+        <button type="button" class="button button-outline" id="cancelDialogBtn">Cancel</button>
+        <button type="submit" class="button button-primary" id="savePostBtn">Save post <span>↗</span></button>
+      </div>
+    </form>
+  </dialog>
 </body>
 </html>
